@@ -99,6 +99,35 @@ Stretch goals:
 
 const createPost = (newPost) => {
     const id = getUUID()
+
+    if (newPost.title === undefined || typeof(newPost.title) !== "string" || newPost.title.length > 40) {
+        return {
+            isValid: false,
+            message: "Title is a required field, must be a string and less than 40 char."
+        }
+    }
+    
+    if (newPost.text === undefined || typeof(newPost.text) !== "string") {
+        return {
+            isValid: false,
+            message: "Text is a required field and must be a string."
+        }
+    }
+    
+    if (newPost.author === undefined || typeof(newPost.author) !== "string" || newPost.author.length > 40) {
+        return {
+            isValid: false,
+            message: "Author is a required field, must be a string and less than 40 char."
+        }
+    }
+    
+    if (newPost.categories === undefined || newPost.categories.length < 1 || !Array.isArray(newPost.categories)) {
+        return {
+            isValid: false,
+            message: "Categories must exist, must be an array and have items in it"
+        }
+    }
+
     const postData = {
         id: getUUID(),
         createdAt: new Date(),
