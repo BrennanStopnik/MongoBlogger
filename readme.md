@@ -58,18 +58,31 @@ const getUUID = () => {
 }
 
 const getPosts = (searchObject, sortObject, limit, skip) => {
-    const posts = db.blogs.find(searchObject).toArray()
+    const posts = db.posts.find(searchObject).sort(sortObject).limit(limit).skip(skip).toArray()
+    
+    for (let i = 0; i < posts.length; i++){    
+        if (sortObject === undefined || limit === undefined || skip === undefined){
+        continue;
+        }
+    }
     return posts
 }
 
 const searchObject = {}
 const sortObject = {}
-const limit = 10
-const skip = 0
+const limit = 3
+const skip = 2
+
+// searchObject.createdAt = {
+//         $gt: new Date("5/1/2022")
+// }
 
 // Uncomment the following line when you're ready to run getPosts
-// const posts = getPosts(searchObject, sortObject, limit, skip)
-// console.log(posts)
+const posts = getPosts(searchObject, sortObject, limit, skip)
+console.log(posts)
+
+
+   
 
 /* 
 Requirements:
@@ -87,11 +100,14 @@ Stretch goals:
 const createPost = (newPost) => {
     const id = getUUID()
     const postData = {
-        /*
-            Your code here ...
-        */
+        id: getUUID(),
+        createdAt: new Date(),
+        title: newPost.title,
+        text: newPost.text,
+        author: newPost.author,
+        categories: newPost.categories
     }
-    db.blogs.insertOne(postData)
+    db.posts.insertOne(postData)
 }
 
 const newPost = {
@@ -115,7 +131,17 @@ Stretch Goal:
 */
 
 const updatePost = (id, newPostData) => {
-    db.blogs.updateOne({}, {}) // Update this line with your code
+    db.posts.updateOne({
+        id: postId
+    }, {
+        $set: {
+            //title. newPostData.title,
+            text: newPostData.text,
+            author: newPostData.author,
+            categories: newPostData.categories,
+            lastModified: new Date()
+        }
+    })
 }
 
 const updatedPost = {
@@ -124,7 +150,7 @@ const updatedPost = {
     author: "Batman",
     categories: ["superhero", "action", "thriller"]
 }
-const postId = "" // This variable should be the uuid of the blog post you created before using createPost
+const postId = "5bb8d076-fa3e-4802-bbf2-f4671156a2ad" // This variable should be the uuid of the blog post you created before using createPost
 
 // Uncomment the following line when you're ready to run updatePost
 // updatePost(postId, updatedPost)
@@ -141,10 +167,12 @@ Stretch Goal:
 */
 
 const deletePost = (id) => {
-    // Your code here ...
+    db.posts.deleteOne({
+    id: postIdToDelete
+})
 }
 
-const postIdToDelete = ""
+const postIdToDelete = "8d850030-d5d0-47c6-8ed5-a5265c166cb4"
 
 // Uncomment the following line when you're ready to run deletePost
 // deletePost(postIdToDelete)
